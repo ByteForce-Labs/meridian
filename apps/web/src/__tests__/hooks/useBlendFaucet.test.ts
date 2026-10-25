@@ -156,9 +156,12 @@ describe("useBlendFaucet", () => {
   it("surfaces a timeout error for a hung faucet response", async () => {
     const timeoutError = new Error("The operation was aborted");
     timeoutError.name = "TimeoutError";
-    vi.stubGlobal("fetch", vi.fn(async () => {
-      throw timeoutError;
-    }));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw timeoutError;
+      })
+    );
     const { result } = renderHook(() => useBlendFaucet());
 
     let ok: boolean | undefined;
@@ -170,7 +173,10 @@ describe("useBlendFaucet", () => {
     expect(wallet.sign).not.toHaveBeenCalled();
     expect(api.submitTx).not.toHaveBeenCalled();
     expect(useToastStore.getState().toasts).toContainEqual(
-      expect.objectContaining({ kind: "error", message: "vaultActions.faucetTimeout" })
+      expect.objectContaining({
+        kind: "error",
+        message: "vaultActions.faucetTimeout",
+      })
     );
     expect(fetch).toHaveBeenCalledWith(
       expect.stringContaining("getAssets"),
